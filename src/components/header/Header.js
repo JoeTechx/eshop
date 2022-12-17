@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaShoppingCart } from 'react-icons/fa'
+import { FaShoppingCart } from "react-icons/fa";
 import styles from "./Header.module.scss";
 
 const logo = (
@@ -15,13 +15,13 @@ const logo = (
 
 const cart = (
   <span className={styles.cart}>
-  <Link to="/cart">
-    Cart
-    <FaShoppingCart size={20}/>
-    <p>0</p>
+    <Link to="/cart">
+      Cart
+      <FaShoppingCart size={20} />
+      <p>0</p>
     </Link>
-</span>
-)
+  </span>
+);
 
 const Header = () => {
   return (
@@ -31,27 +31,22 @@ const Header = () => {
         <nav>
           <ul>
             <li>
-              <Link to="/">
-                Home
-              </Link>
+              <Link to="/">Home</Link>
             </li>
 
             <li>
-              <Link to="/contact">
-                Contact Us
-              </Link>
+              <Link to="/contact">Contact Us</Link>
             </li>
           </ul>
-<div className={styles["header-right"]}>
-  <span className={styles.links}>
-    <Link to="/login">Login</Link>
-    <Link to="/register">Register</Link>
-    <Link to="/order-history">My Orders</Link>
-  </span>
+          <div className={styles["header-right"]}>
+            <span className={styles.links}>
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+              <Link to="/order-history">My Orders</Link>
+            </span>
 
-{cart}
-</div>
-
+            {cart}
+          </div>
         </nav>
       </div>
     </header>
