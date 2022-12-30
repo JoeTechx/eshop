@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link, NavLink} from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaTimes } from "react-icons/fa";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import styles from "./Header.module.scss";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/config";
+import { toast } from "react-toastify";
 
 const logo = (
   <div className={styles.logo}>
@@ -14,10 +17,7 @@ const logo = (
   </div>
 );
 
-const activeLink =(
-  ({isActive}) => 
-  (isActive ? `${styles.active}` : "")
-)
+const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const cart = (
   <span className={styles.cart}>
@@ -31,6 +31,7 @@ const cart = (
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -38,6 +39,16 @@ const Header = () => {
 
   const hideMenu = () => {
     setShowMenu(false);
+  };
+  const logoutUser = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("Logout successfully...");
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   return (
@@ -58,25 +69,37 @@ const Header = () => {
             onClick={hideMenu}
           ></div>
           <ul onClick={hideMenu}>
-
             <li className={styles["logo-mobile"]}>
               {logo}
               <FaTimes size={22} color="#fff" onClick={hideMenu} />
             </li>
 
             <li>
-              <NavLink to="/" className={activeLink}>Home</NavLink>
+              <NavLink to="/" className={activeLink}>
+                Home
+              </NavLink>
             </li>
 
             <li>
-              <NavLink to="/contact" className={activeLink}>Contact Us</NavLink>
+              <NavLink to="/contact" className={activeLink}>
+                Contact Us
+              </NavLink>
             </li>
           </ul>
           <div className={styles["header-right"]} onClick={hideMenu}>
             <span className={styles.links}>
-              <NavLink to="/login" className={activeLink}>Login</NavLink>
-              <NavLink to="/register" className={activeLink}>Register</NavLink>
-              <NavLink to="/order-history" className={activeLink}>My Orders</NavLink>
+              <NavLink to="/login" className={activeLink}>
+                Login
+              </NavLink>
+              <NavLink to="/register" className={activeLink}>
+                Register
+              </NavLink>
+              <NavLink to="/order-history" className={activeLink}>
+                My Orders
+              </NavLink>
+              <NavLink to="/" onClick={logoutUser}>
+                Logout
+              </NavLink>
             </span>
             {cart}
           </div>
