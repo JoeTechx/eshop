@@ -7,8 +7,10 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-  import { SET_ACTIVE_USER } from "../../redux/slice/authSlice"
-
+import {
+  SET_ACTIVE_USER,
+  REMOVE_ACTIVE_USER,
+} from "../../redux/slice/authSlice";
 
 const logo = (
   <div className={styles.logo}>
@@ -37,8 +39,7 @@ const Header = () => {
   const [displayName, setDisplayName] = useState("");
   const navigate = useNavigate();
 
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -54,15 +55,27 @@ const Header = () => {
         // console.log(user)
         // const uid = user.uid;
         // console.log(user.displayName);
-        setDisplayName(user.displayName);
-          dispatch(SET_ACTIVE_USER({
-            email: user.email,
-            userName: user.displayName,
-            userID: user.uid,
-          }))
 
+        if (user.displayName == null) {
+          const u1 = user.email.substring(0, user.email.indexOf("@"));
+          // console.log(u1)
+          const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
+          // console.log(uName)
+          setDisplayName(uName);
+        } else {
+          setDisplayName(user.displayName);
+        }
+
+        dispatch(
+          SET_ACTIVE_USER({
+            email: user.email,
+            userName: user.displayName ? user.displayName : displayName,
+            userID: user.uid,
+          })
+        );
       } else {
         setDisplayName("");
+        dispatch(REMOVE_ACTIVE_USER());
       }
     });
   }, []);
@@ -118,8 +131,8 @@ const Header = () => {
               <NavLink to="/login" className={activeLink}>
                 Login
               </NavLink>
-              <a href="#">
-                <FaUserCircle size={16}/>
+              <a href="/setting">
+                <FaUserCircle size={16} />
                 Hi, {displayName}
               </a>
               <NavLink to="/register" className={activeLink}>
